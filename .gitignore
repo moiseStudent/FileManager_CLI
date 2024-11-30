@@ -1,0 +1,7 @@
+### Ignore the python virtual enviroment
+
+bin/
+include/
+lib/
+*cfg
+
