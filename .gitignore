@@ -5,3 +5,7 @@ include/
 lib/
 *cfg
 
+env/
+
+*prueba.txt
+*prueba.py
