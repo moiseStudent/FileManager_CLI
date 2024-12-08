@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import shutil
 
@@ -5,7 +7,10 @@ class FileManager:
     def __init__(self) -> None:
         pass
     
-    def organize_files(self) -> None:
+    def organize_files(self, path: str) -> str:
+
+        if path == os.getcwd():
+            return "Error: This function cannot be executed in the script's root path."
 
         documents_type = [
             'images',
@@ -17,7 +22,7 @@ class FileManager:
             'dev'
         ]
 
-        ### Extensions Dictionary
+        ### Extensions Dictionary 
         extensions = {
             documents_type[0]:['.jpg', '.jpeg', '.png', '.gif', '.tiff', '.bmp', '.svg'],
             documents_type[1]:['.doc', '.docx', '.pdf', '.txt', '.rtf', '.odt'],
@@ -28,39 +33,36 @@ class FileManager:
             documents_type[6]:['.html']
         }
 
-        ### Getting list the files into the curret directory
-        files = os.listdir()
+        ### Gets the file list into the path given.
+        files = os.listdir(path)
 
         for file in files:
-            ### Check that it is not a hidden file.
-            if not file.startswith('.'):
-                if os.path.splitext(file)[1] == '': ### Chekc that it's not a folder.
-                    pass
+
+            ### Verify that this elements is not neither hidden file or a folder.
+            if not file.startswith('.') and os.path.isdir(file) == False:
                 
-                else:
-                    search = False
-                    i = 0
+                found = False
+                i = 0
+                
+                while found == False and i <= 6:
+                    ### Search the extension into the dict.
+                    if str(os.path.splitext(file)[1]) in extensions[documents_type[i]]:
+                        """
+                        When it is True, mean that it has found the extension on
+                        the current list, then Makes the folder if not exits and
+                        move the file to there.
+                        """
+                        folder_name = documents_type[i]
+                        os.makedirs(f"{path}/{folder_name}", exist_ok=True)
+                        shutil.move(f"{path}/{file}", f"{path}/{documents_type[i]}")
 
-                    while search == False and i <= 6:
-                        ### Search the extension into the dict.
-                        if str(os.path.splitext(file)[1]) in extensions[documents_type[i]]:
-                            """
-                            When it is True, mean that it has found the extension on
-                            the current list, then Makes the folder if not exits and
-                            move the file to there.
-                            """
+                        found = True
 
-                            os.makedirs(documents_type[i], exist_ok=True)
-                            shutil.move(file, documents_type[i])
+                    else:
 
-                            search = True
+                        os.makedirs(f"{path}/unknown", exist_ok=True)
+                        #print("The file will save into unknown folder")
+                        found = False
+                        i += 1
 
-                        else:
-                            print("Guardar en sin clasificar")
-
-                            search = False
-                            i += 1                        
-
-###! Ejecucio unicamente de prueba - It's only for a test            
-manager = FileManager()
-manager.organize_files()
+        return "The files have been organized"

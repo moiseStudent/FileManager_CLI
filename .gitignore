@@ -5,3 +5,6 @@ include/
 lib/
 *cfg
 
+### Ignore the cache
+
+__pycache__/
